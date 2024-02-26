@@ -1,25 +1,41 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import MoviesService from "../services/movies.service";
+import { useDispatch, useSelector } from "react-redux";
+import { movieSelector } from "../store/movie/selectors";
+import { performGetMovies } from "../store/movie/slice";
 
 export default function AppMovies() {
-  const [movies, setMovies] = useState([]);
+  // const [movies, setMovies] = useState([]);
+
+  const dispatch = useDispatch();
+  const movies = useSelector(movieSelector);
+
+  // useEffect(() => {
+  //   const fetchMovies = async () => {
+  //     try {
+  //       const data = await MoviesService.getAllMovies();
+  //       setMovies(data?.data || []);
+  //     } catch (error) {
+  //       console.error("Error fetching movies:", error);
+  //     }
+  //   };
+
+  //   fetchMovies();
+  // }, []);
 
   useEffect(() => {
-    const fetchMovies = async () => {
-      try {
-        const data = await MoviesService.getAllMovies();
-        setMovies(data?.data || []);
-      } catch (error) {
-        console.error("Error fetching movies:", error);
-      }
-    };
-
-    fetchMovies();
-  }, []);
+    dispatch(performGetMovies());
+  }, [dispatch]);
 
   return (
-    <div style={{ display: "flex" }}>
-      <div>{movies.map((movie) => movie.title)}</div>
+    <div>
+      <h1>Movies</h1>
+
+      <ul>
+        {movies.map((movie) => (
+          <li key={movie.id}>{movie.title}</li>
+        ))}
+      </ul>
     </div>
   );
 }
